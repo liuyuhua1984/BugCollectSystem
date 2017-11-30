@@ -64,8 +64,6 @@ public class WebConfig extends ServerProperties {
 		if (!ToolUtils.isStringNull(channelfile)){
 			channelfile = channelfile.toLowerCase().trim();
 			String  file[] = ToolUtils.split(channelfile, "_");
-		
-			
 			if (file.length > 1){
 				CHANNEL = Integer.parseInt(file[1]);
 			}

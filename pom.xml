@@ -110,7 +110,7 @@
 		<javax.servlet-api.version>3.1.0</javax.servlet-api.version>
 		<javax.servlet.jsp-api.version>2.3.1</javax.servlet.jsp-api.version>
 		<xbean-spring.version>4.5</xbean-spring.version>
-
+		<solr-solrj.version>7.1.0</solr-solrj.version>
 		<!-- environment setting -->
 		<jdk.version>1.8</jdk.version>
 
@@ -739,6 +739,13 @@
 			<artifactId>imgscalr-lib</artifactId>
 			<version>${imgscalr-lib.version}</version>
 		</dependency>
+		
+		<!--solr客户端solrj的依赖 -->  
+        <dependency>  
+            <groupId>org.apache.solr</groupId>  
+            <artifactId>solr-solrj</artifactId>  
+            <version>${solr-solrj.version}</version>  
+        </dependency>  
 		<!-- 加载本地包 <dependency> <groupId>com.read</groupId> <artifactId>com.read</artifactId> 
 			<version>excel-read</version> <scope>system</scope> <systemPath> ${basedir}/WebContent/WEB-INF/lib/game-lib.jar 
 			</systemPath> </dependency> -->

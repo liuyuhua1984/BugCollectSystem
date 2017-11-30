@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-4.3.xsd
+            http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+           http://www.springframework.org/schema/tx 
+           http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+
+
+
+	<!-- Shiro 的Web过滤器 -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<!-- 要求登录时的链接(可根据项目的URL进行替换),非必须的属性,默认会自动寻找Web工程根目录下的"/login.jsp"页面 
+		<property name="loginUrl" value="/index" />-->
+		<!-- 登录成功后要跳转的连接(本例中此属性用不到,因为登录成功后的处理逻辑在LoginController里硬编码为main.jsp了) -->
+		<!-- 认证成功统一跳转到first.action，建议不配置，shiro认证成功自动到上一个请求路径 <property name="successUrl" value="/index"/> -->
+		<!-- 通过unauthorizedUrl指定没有权限操作时跳转页面 -->
+		<property name="unauthorizedUrl" value="/refuse.jsp" />
+		<!-- 自定义filter配置 -->
+		<property name="filters">
+			<map>
+				<!-- 将自定义 的FormAuthenticationFilter注入shiroFilter中 -->
+				<entry key="authc" value-ref="formAuthenticationFilter" />
+				<entry key="mobileAuthc" value-ref="mobileFormAuthenticationFilter" />
+				<entry key="logout" value-ref="logoutFilter" />
+			<entry key="mobileLogout" value-ref="mobileLogoutFilter" />
+			</map>
+		</property>
+
+
+		<!-- 配置哪些页面需要受保护. 以及访问这些页面需要的权限. 1). anon 可以被匿名访问 2). authc 必须认证(即登录)后才可能访问的页面. 3). logout 登出. 4). roles 角色过滤器 -->
+		<!-- 过虑器链定义，从上向下顺序执行，一般将/**放在最下边 -->
+		<!-- Shiro连接约束配置,即过滤链的定义 -->
+		<!-- 此处可配合这篇文章来理解各个过滤连的作用http://blog.csdn.net/jadyer/article/details/12172839 -->
+		<!-- 下面value值的第一个'/'代表的路径是相对于HttpServletRequest.getContextPath()的值来的 -->
+		<!-- anon：它对应的过滤器里面是空的,什么都没做,这里.do和.jsp后面的*表示参数,比方说login.jsp?main这种 -->
+		<!-- authc：该过滤器下的页面必须验证后才能访问,它是Shiro内置的一个拦截器org.apache.shiro.web.filter.authc.FormAuthenticationFilter -->
+		<property name="filterChainDefinitions">
+			<value>
+				<!-- 对静态资源设置匿名访问 -->
+				/img/** = anon
+				/js/** = anon
+				/css/** = anon
+				/font-awesome/** = anon
+				/fonts/** = anon
+				/font/** = anon
+				/theme/** = anon
+				/images/** = anon
+				/upload/** = anon
+				<!-- 验证码，可匿名访问 -->
+				/validate = anon
+				/login =anon
+				/mobile/login =anon
+				/mobile/**=mobileAuthc
+				/player/feedback/add =anon
+				/auth/real/name = anon
+				/alipay/**/pay = anon
+				/pay/notify =anon
+				/apple/pay/**/verify = anon
+				/wechat/pay/**/unifiedorder = anon
+				/wechat/pay/notify/return = anon
+				/player/code = anon
+				/player/unbind = anon
+				/alipay**/pay = anon
+				/alipay/pay/notify=anon
+				/invite/code/check=anon
+				<!-- 请求 logout.action地址，shiro去清除session -->
+				/logout = logout
+				/mobile/logout=mobileLogout
+				<!--商品查询需要商品查询权限 ，取消url拦截配置，使用注解授权方式 -->
+				<!-- /items/queryItems.action = perms[item:query] /items/editItems.action = perms[item:edit] -->
+				<!-- 配置记住我或认证通过可以访问的地址 
+				/index = user-->
+
+				<!-- /** = authc 所有url都必须认证通过才可以访问 -->
+				/** = authc
+				<!-- /** = anon所有url都可以匿名访问 -->
+
+			</value>
+		</property>
+
+	</bean>
+
+
+
+	<!-- realm -->
+	<bean id="myRealm" class=" com.lyh.admin.shiro.MyRealm">
+		<!-- 将凭证匹配器设置到realm中，realm按照凭证匹配器的要求进行散列 <property name="credentialsMatcher" ref="credentialsMatcher"/> -->
+	</bean>
+
+	<bean id="mobileRealm" class=" com.lyh.admin.shiro.MobileRealm">
+		<!-- 将凭证匹配器设置到realm中，realm按照凭证匹配器的要求进行散列 <property name="credentialsMatcher" ref="credentialsMatcher"/> -->
+	</bean>
+
+	<!-- 凭证匹配器 -->
+	<bean id="credentialsMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+		<property name="hashAlgorithmName" value="md5" />
+		<property name="hashIterations" value="1" />
+	</bean>
+
+	<bean id="defineModularRealmAuthenticator" class="com.lyh.admin.shiro.MyModularRealm">
+		<property name="definedRealms">
+			<map>
+				<entry key="myRealm" value-ref="myRealm" />
+				<entry key="mobileRealm" value-ref="mobileRealm" />
+			</map>
+		</property>
+	</bean>
+
+	<!-- 缓存管理器 -->
+	<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<!-- Set a net.sf.ehcache.CacheManager instance here if you already have one. If not, a new one will be creaed with a default config: <property name="cacheManager" ref="ehCacheManager"/> -->
+		<!-- If you don't have a pre-built net.sf.ehcache.CacheManager instance to inject, but you want a specific Ehcache configuration to be used, specify that here. If you don't, a default will be used.: 
+			<property name="cacheManagerConfigFile" value="classpath:some/path/to/ehcache.xml"/> -->
+		<property name="cacheManagerConfigFile" value="classpath:config/shiro-ehcache.xml" />
+	</bean>
+
+
+	<!-- 自定义form认证过虑器 -->
+	<!-- 基于Form表单的身份验证过滤器，不配置将也会注册此过虑器，表单中的用户账号、密码及loginurl将采用默认值，建议配置 -->
+	<bean id="formAuthenticationFilter" class=" com.lyh.admin.shiro.MyFormAuthenticationFilter ">
+		<!-- 表单中账号的input名称 -->
+		<property name="usernameParam" value="username" />
+		<!-- 表单中密码的input名称 -->
+		<property name="passwordParam" value="password" />
+		<property name="loginTypeParam" value="loginType" />
+		<property name="loginUrl" value="/index" />
+		<property name="successUrl" value="/index" />
+		<!-- 记住我input的名称 -->
+		<property name="rememberMeParam" value="rememberMe" />
+	</bean>
+
+	<bean id="mobileFormAuthenticationFilter" class="com.lyh.admin.shiro.MobileFormAuthenticationFilter">
+		<!-- 表单中账号的input名称 -->
+		<property name="usernameParam" value="username" />
+		<!-- 表单中密码的input名称 -->
+		<property name="passwordParam" value="password" />
+		<property name="loginTypeParam" value="loginType" />
+		<property name="loginUrl" value="/mobile/index" />
+		<property name="successUrl" value="/mobile/index" />
+		<!-- 记住我input的名称 -->
+		<property name="rememberMeParam" value="rememberMe" />
+	</bean>
+
+  <bean id="logoutFilter" class="com.lyh.admin.shiro.SystemLogoutFilter">
+        <property name="redirectUrl" value="/index" />
+    </bean>
+    
+      <bean id="mobileLogoutFilter" class="com.lyh.admin.shiro.SystemLogoutFilter">
+        <property name="redirectUrl" value="/mobile/index" />
+    </bean>
+    
+	<!-- 会话 ID 生成器 -->
+	<bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator" />
+	<!-- 会话 DAO -->
+	<bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
+		<property name="activeSessionsCacheName" value="shiro-activeSessionCache" />
+		<property name="sessionIdGenerator" ref="sessionIdGenerator" />
+	</bean>
+	<!-- 会话验证调度器 <bean id="sessionValidationScheduler" class="org.apache.shiro.session.mgt.quartz.QuartzSessionValidationScheduler"> <property name="sessionValidationInterval" value="1800000" /> <property 
+		name="sessionManager" ref="sessionManager" /> </bean> -->
+
+	<!-- 安全管理器 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realms">
+			<list>
+				<ref bean="myRealm" />
+				<ref bean="mobileRealm" />
+			</list>
+		</property>
+
+		<property name="authenticator" ref="defineModularRealmAuthenticator" />
+		<!-- 注入缓存管理器 -->
+		<property name="cacheManager" ref="cacheManager" />
+		<!-- 注入session管理器 -->
+		<property name="sessionManager" ref="sessionManager" />
+		<!-- 记住我 -->
+		<property name="rememberMeManager" ref="rememberMeManager" />
+	</bean>
+
+
+
+	<!-- 会话 Cookie 模板 -->
+	<bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+		<constructor-arg value="webid" />
+		<property name="httpOnly" value="true" />
+		<property name="maxAge" value="180000" />
+	</bean>
+
+	<bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+		<constructor-arg value="rememberMe" />
+
+		<property name="httpOnly" value="true" />
+		<property name="maxAge" value="2592000" /><!-- 30 天 -->
+	</bean>
+
+	<!-- 会话管理器 -->
+	<bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+		<property name="globalSessionTimeout" value="1800000" />
+		<!-- 定时清理失效会话, 清理用户直接关闭浏览器造成的孤立会话 -->
+		<property name="sessionValidationInterval" value="1800000" />
+		<property name="sessionValidationSchedulerEnabled" value="true" />
+		<!-- <property name="sessionValidationScheduler" ref="sessionValidationScheduler" /> -->
+		<property name="sessionDAO" ref="sessionDAO" />
+		<property name="sessionIdCookieEnabled" value="true" />
+		<property name="sessionIdCookie" ref="sessionIdCookie" />
+	</bean>
+
+
+
+
+	<!-- rememberMe 管理器 -->
+	<bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+		<!--  <property name="cipherKey" value="
+#{T(org.apache.shiro.codec.Base64).decode('4AvVhmFLUs0KTA3Kprsdag==')}" />-->
+		<property name="cookie" ref="rememberMeCookie" />
+	</bean>
+
+
+	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+
+	<!-- AOP式方法级权限检查 -->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
+		<property name="proxyTargetClass" value="true" />
+	</bean>
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+
+
+</beans>
