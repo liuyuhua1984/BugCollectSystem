@@ -741,11 +741,11 @@
 		</dependency>
 		
 		<!--solr客户端solrj的依赖 -->  
-        <dependency>  
+        <dependency>
             <groupId>org.apache.solr</groupId>  
             <artifactId>solr-solrj</artifactId>  
             <version>${solr-solrj.version}</version>  
-        </dependency>  
+        </dependency>
 		<!-- 加载本地包 <dependency> <groupId>com.read</groupId> <artifactId>com.read</artifactId> 
 			<version>excel-read</version> <scope>system</scope> <systemPath> ${basedir}/WebContent/WEB-INF/lib/game-lib.jar 
 			</systemPath> </dependency> -->

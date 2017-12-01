@@ -9,7 +9,7 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 
     <!--把dao 数据层 和 service 服务层，提交spring管理-->
-    <context:component-scan base-package="com.lyh.admin"/>
+    <context:component-scan base-package="com.tbug"/>
     <context:annotation-config/>
 
 <!-- 访问静态资源 标签配置静态资源文件不需要走控制器，直接映射到mapping -->
@@ -53,13 +53,6 @@
 
     <!--<mvc:view-controller path="/header" view-name="/admin/themes/header"/>-->
 
-<mvc:interceptors>
-  <mvc:interceptor><!--配置局部拦截器，需要满足下列路径条件-->
-    <mvc:mapping path="/**"/>
-    <bean class="com.lyh.admin.interceptor.SysInterceptor"/><!--自定义拦截器注册-->
-  </mvc:interceptor>
-  <!-- 我们可以直接在者注册自定义拦截器Bean来配置全局拦截器，会对所有请求拦截-->
-</mvc:interceptors>
 	<bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<!-- 这里的配置我的理解是自动给后面action的方法return的字符串加上前缀和后缀，变成一个 可用的url地址 -->
@@ -90,5 +83,5 @@
     
     <!-- 自定义的全局异常处理器 
 只要实现HandlerExceptionResolver接口就是全局异常处理器-->
-<bean class="com.lyh.admin.exception.GlobalExceptionResolver"></bean> 
+<bean class="com.tbug.exception.GlobalExceptionResolver"></bean> 
 </beans>

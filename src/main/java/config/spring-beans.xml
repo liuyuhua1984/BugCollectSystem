@@ -25,7 +25,8 @@
 		</property>
 	</bean>
 
-	<!-- <import resource ="classpath*:config/spring-mybatis.xml" />
+	 <import resource ="classpath*:config/spring-mybatis.xml" />
+	 <!--
 	<import resource="classpath*:config/spring-call-job.xml" />
 		<import resource="classpath*:config/spring-jms.xml" />-->
 

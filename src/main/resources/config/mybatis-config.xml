@@ -5,8 +5,8 @@
 <configuration>
 	<settings>
 		<!--SLF4J Apache Commons Logging Log4j 2 Log4j JDK logging -->
-		<!-- 打印查询语句 -->
-		<setting name="logImpl" value="SLF4J" />
+		<!-- 打印查询语句  mybatis的日志打印方式比较多，SLF4J | LOG4J | LOG4J2 | JDK_LOGGING | COMMONS_LOGGING | STDOUT_LOGGING | NO_LOGGING，可以根据自己的需要进行配置-->
+		<setting name="logImpl" value="STDOUT_LOGGING" />
 
 	</settings>
 	<!-- 

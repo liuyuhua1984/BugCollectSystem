@@ -6,15 +6,7 @@
 <%@include file="sys/header.jsp"%>
 <%@include file="sys/navibar.jsp"%>
 <%@include file="sys/sidebar.jsp"%>
-<!-- 
-<div class="btn-toolbar" style="margin-bottom:2px;">
-	<a href="${ctxPage}/noticeboard/add_view" class="btn btn-primary">
-		<i class="icon-plus"></i>
-		添加公告
-	</a>
-</div>
- -->
- <div style="border:0px;padding-bottom:5px;height:auto">
+<div style="border:0px;padding-bottom:5px;height:auto">
 	<form action="" method="POST" style="margin-bottom:0px">
 
 		<div style="float:left;margin-right:5px">
@@ -27,10 +19,28 @@
 		</div>
 		
 		<div style="float:left;margin-right:5px">
-			<label>玩家ID，查询所有用户请留空</label>
-			<input type="number" name="playerId" value="${playerId}" placeholder="输入玩家ID">
+			<label>玩家账号</label>
+			<input type="text" name="openId" value="" placeholder="玩家账号">
 		</div>
-
+		 <div style="float:left;margin-right:5px">
+			<label>玩家Id</label>
+			<input type="text" name="playerId" value="" placeholder="玩家Id">
+		</div>
+		
+		<div style="float:left;margin-right:5px">
+			<label>玩家名称</label>
+			<input type="text" name="playerName" value="" placeholder="玩家名称">
+		</div>
+		
+		<div style="float:left;margin-right:5px">
+			<label>描述</label>
+			<input type="text" name="descs" value="" placeholder="bug描述">
+		</div>
+		
+		<div style="float:left;margin-right:5px">
+			<label>项目</label>
+			<input type="text" name="folder" value="jz" placeholder="项目">
+		</div>
 		
 		<div class="btn-toolbar" style="padding-top:25px;padding-bottom:0px;margin-bottom:0px">
 			<button type="submit" class="btn btn-primary">
@@ -41,48 +51,40 @@
 		<div style="clear:both;"></div>
 	</form>
 </div>
+
 <div class="block">
 	<a href="#page-stats" class="block-heading" data-toggle="collapse">${page_title}</a>
 	<div id="page-stats" class="block-body collapse in">
 		<table class="table table-striped table-bordered table-condensed">
 			<thead>
 				<tr>
-					<th style="width:80px">玩家ID</th>
-					<th style="width:100px">角色名</th>
-					<th style="width:150px">账号</th>
-					<th style="width:80px">房卡</th>
-					<th style="width:80px">状态</th>
-					<th style="width:100px">邀请码</th>
-					<th style="width:80px">登录时间</th>
-					<th style="width:80px">操作</th>
+					<th style="width :50px">项目</th>
+					<th style="width :100px">玩家账号</th>
+					<th style="width :100px">玩家Id</th>
+					<th style="width :100px">玩家名称</th>
+					<th style="width :100px">描述</th>
+					<th style="width :100px">记录时间</th>
+					<th style="width :30px">操作</th>
 				</tr>
 			</thead>
 
 			<tbody>
 				<c:forEach items="${list}" var="item">
 					<tr>
-						<td>${item.playerId}</td>
-						<td>${item.roleName}</td>
+						<td>${item.folder}</td>
 						<td>${item.openId}</td>
-						<td>${item.curMoney}</td>
 						<td>
-							<c:choose>
-								<c:when test="${item.status eq '1'}">正常</c:when>
-								<c:when test="${item.status eq '2'}">禁言中</c:when>
-								<c:when test="${item.status eq '3'}">封号中</c:when>
-							</c:choose>
+							 ${item.playerId}
+						</td>
+						<td>${item.playerName}</td>
+						<td>${item.descs}</td>
+					
+						<td>
+							<fmt:formatDate value="${item.createTime}" pattern="yyyy-MM-dd HH:mm:ss" />
 						</td>
 						<td>
-							<c:choose>
-								<c:when test="${ !empty item.inviteCode }">${item.inviteCode}</c:when>
-								<c:otherwise>
-              						 无
-               					</c:otherwise>
-							</c:choose>
-
+								<a href="${ctxPage}/download_file?id=${item.id}">下载</a> 
 						</td>
-						<td>${item.lastLoginTime}</td>
-						<td>	<a  href="${ctxPage}/proxy/recharge_player?id=${item.playerId}"  >充值</a></td>
 					</tr>
 				</c:forEach>
 			</tbody>
@@ -92,6 +94,7 @@
 		<!--- END --->
 	</div>
 </div>
+
 <script type="text/javascript">
 	var msg = "${msg}";
 	if (msg != null && msg != "") {

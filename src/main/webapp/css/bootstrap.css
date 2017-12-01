@@ -3330,11 +3330,18 @@ input[type="submit"].btn.btn-mini {
   -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
-.pagination ul > li {
+.pagination ul > li,
+.pagination ul > li > form,
+.pagination ul > li > span > form {
   display: inline;
 }
+
 .pagination ul > li > a,
-.pagination ul > li > span {
+.pagination ul > li > span,
+.pagination ul > li > input,
+.pagination ul > li > form > input,
+.pagination ul > li > form > button,
+.pagination ul > li > span > form > input {
   float: left;
   padding: 0 14px;
   line-height: 38px;
@@ -3343,6 +3350,12 @@ input[type="submit"].btn.btn-mini {
   border: 1px solid #dddddd;
   border-left-width: 0;
 }
+.pagination ul > li > form > input,
+.pagination ul > li > span > form > input{
+	width : 30px;
+	height: 38px;
+}
+
 .pagination ul > li > a:hover,
 .pagination ul > .active > a,
 .pagination ul > .active > span {

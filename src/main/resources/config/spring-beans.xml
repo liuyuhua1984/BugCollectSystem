@@ -19,15 +19,16 @@
 			<list>
 				<!-- <value>file:${user.dir}/jdbc.properties</value> <value>file:${user.dir}/jdbclog.properties</value> -->
 				<value>/config/jdbc.properties</value>
-			   <value>/config/solr.properties</value>
 			</list>
 		</property>
 	</bean>
-	<!--  
+	 
 	 <import resource ="classpath*:config/spring-mybatis.xml" />
+	 <!-- 
 	<import resource="classpath*:config/spring-call-job.xml" />
 	<import resource="classpath*:config/spring-jms.xml" />
-	-->
+
 	<import resource="classpath*:config/spring-solr.xml" />
+		-->
 
 </beans>
