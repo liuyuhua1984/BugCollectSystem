@@ -107,7 +107,7 @@ public class UpAndDownController extends BaseController {
 		
 	
 			
-			map.put("res", "1");
+			map.put("res", ""+bugs.getId());
 			map.put("msg", "上传成功");
 			logger.error("文件上传成功::" + folder);
 
@@ -178,6 +178,8 @@ public class UpAndDownController extends BaseController {
 	}
 	
 	
+
+	
 	/**
 	 * getProxyMyList:(). <br/>
 	 * TODO().<br/>
@@ -220,5 +222,44 @@ public class UpAndDownController extends BaseController {
 		return view;
 	
 	}
+	
+	@RequestMapping("/file_del")
+	public ModelAndView delBug(HttpSession session, HttpServletRequest request, @RequestParam(value = "page", defaultValue = "1") int curPage, String startDate, String endDate, String openId, String playerId,String playerName,String descs,@RequestParam(value = "folder", defaultValue = "jz")String folder) {
+		String bugsId = request.getParameter("id");
+		Bugs bugs =	bugsService.findById(Long.parseLong(bugsId));
+		if (bugs != null){
+			bugsService.delete(Long.parseLong(bugsId));
+		}
+		ModelAndView view = new ModelAndView("/BugsList");
+		PageHelper.startPage(curPage, ShowPage.PAGE_SIZE);
 
+		
+		List<Bugs> list = new ArrayList<Bugs>();
+		Date dStartDate = null;
+		Date dEndDate = null;
+		if (!ToolUtils.isStringNull(startDate)) {
+			
+			dStartDate = ToolUtils.getStartDateOneDay(startDate);
+			if (ToolUtils.isStringNull(endDate)) {
+				endDate = ToolUtils.getDateStringFromat(new Date(System.currentTimeMillis()));
+			}
+			
+			dEndDate = ToolUtils.getEndDateOneDay(endDate);
+		}
+		list = bugsService.getBugs( dStartDate, dEndDate,openId, playerId, playerName, descs,bugs.getFolder());
+		
+		PageInfo<Bugs> pageInfo = new PageInfo<Bugs>(list);
+		String pages = ShowPage.showPager(this.getRequestUrl(request), curPage, ShowPage.PAGE_SIZE, pageInfo.getTotal());
+		view.addObject("list", list);
+		view.addObject("pages", pages);
+		// view.addObject("startDate", startDate);
+		// view.addObject("endDate", endDate);
+		// view.addObject("phone", phone);
+		// view.addObject("inivteCode", inviteCode);
+		return view;
+	
+	}
+
+	
+	
 }

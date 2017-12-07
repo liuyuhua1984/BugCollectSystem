@@ -58,6 +58,7 @@
 		<table class="table table-striped table-bordered table-condensed">
 			<thead>
 				<tr>
+					<th style="width :100px">ID</th>
 					<th style="width :50px">项目</th>
 					<th style="width :100px">玩家账号</th>
 					<th style="width :100px">玩家Id</th>
@@ -71,6 +72,7 @@
 			<tbody>
 				<c:forEach items="${list}" var="item">
 					<tr>
+						<td>${item.id}</td>
 						<td>${item.folder}</td>
 						<td>${item.openId}</td>
 						<td>
@@ -84,6 +86,8 @@
 						</td>
 						<td>
 								<a href="${ctxPage}/download_file?id=${item.id}">下载</a> 
+								&nbsp/
+                        <a href="${ctxPage}/file_del?id=${item.id}" onclick="return confirm('确认删除此条数据吗？');return false;">删除</a>
 						</td>
 					</tr>
 				</c:forEach>
