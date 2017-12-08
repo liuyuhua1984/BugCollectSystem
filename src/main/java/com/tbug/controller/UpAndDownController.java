@@ -22,6 +22,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -191,12 +192,14 @@ public class UpAndDownController extends BaseController {
 	 * @param curPage
 	 * @return
 	 */
-	@RequestMapping("/bug_list")
-	public ModelAndView getBugList(HttpSession session, HttpServletRequest request, @RequestParam(value = "page", defaultValue = "1") int curPage, String startDate, String endDate, String openId, String playerId,String playerName,String descs,@RequestParam(value = "folder", defaultValue = "jz")String folder) {
+	@RequestMapping("/bug_list/{folder}")
+	public ModelAndView getBugList(HttpSession session, HttpServletRequest request, @RequestParam(value = "page", defaultValue = "1") int curPage, String startDate, String endDate, String openId, String playerId,String playerName,String descs,@PathVariable(value = "folder",required =false)String folder) {
 		ModelAndView view = new ModelAndView("/BugsList");
 		PageHelper.startPage(curPage, ShowPage.PAGE_SIZE);
 
-		
+		if (folder == null){
+			folder="jz";
+		}
 		List<Bugs> list = new ArrayList<Bugs>();
 		Date dStartDate = null;
 		Date dEndDate = null;
